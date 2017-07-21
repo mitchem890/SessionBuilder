@@ -16,7 +16,7 @@ ABV=SESS[:3].capitalize()
 #WorkDir = '/home/mitchell/Desktop/practice/'+SUBJ+'/unprocessed/3T/'+SUBJ+'_'+SESS
 WorkDir = '/scratch/mjeffers/DMCCPILOT/test_session_download/DOWNLOADS/'+ SUBJ +'/unprocessed/3T/'+SUBJ+'_'+ SESS
 Scans =  WorkDir +'/scans'
-
+structuralNames = ['T1w', 'T2w']
 trialFolders = ["rfMRI_Rest",  "tfMRI_Axcpt",  "tfMRI_Cuedts", "tfMRI_Stern", "tfMRI_Stroop"]
 
 #finds the position of the nth needle in haystack 0 indexed
@@ -103,7 +103,7 @@ for directory in sorted(os.listdir(Scans)):
                 shutil.rmtree(os.path.join(root))
             else:
                 ###TODO###ADD T1w and T2w exceptions
-                if ('T1w','T2w') in name:
+                if any(x in name for x in structuralNames):
                     StructuralSetup(name)
                 newName = renameFile(name)
                 folder = findFolder(newName)
