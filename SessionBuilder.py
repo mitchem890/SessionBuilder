@@ -75,6 +75,7 @@ def renameFile(oldFilename):
 
 #finds the folders to place the file based on DMCC standard name scheme
 def findFolder(filename):
+    a = findnth(filename, '_', 1)
     folderName = filename[a+1:]
     if "SBRef" in filename:
         folderName = folderName.replace("_SBRef",'')
