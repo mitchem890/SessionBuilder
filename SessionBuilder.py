@@ -38,8 +38,8 @@ def StructuralSetup(root,StructuralImage):
     if not os.path.isdir(os.path.join(WorkDir,"T2w")):
         os.mkdir(os.path.join(WorkDir,"T2w"))
     newName=StructuralImage.replace(SUBJ + '_' + SESS + '_','')
-    newName=newName.replace('MPR','')
-    newName = newName.replace('SPC', '')
+    newName=newName.replace('_MPR','')
+    newName = newName.replace('_SPC', '')
     folderName=newName.replace('.nii.gz', '')
     shutil.copy(os.path.join(root,StructuralImage),os.path.join(WorkDir, folderName, newName))
 
