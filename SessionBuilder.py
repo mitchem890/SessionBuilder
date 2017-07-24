@@ -28,7 +28,7 @@ def findnth(haystack, needle, n):
 
 
 #Setup Structural image folder and handle special Structural image naming scheme
-def StructuralSetup(StructuralImage):
+def StructuralSetup(root,StructuralImage):
     if not os.path.isdir(os.path.join(WorkDir,"T1w_MPR1")):
         os.mkdir(os.path.join(WorkDir,"T1w_MPR1"))
     if not os.path.isdir(os.path.join(WorkDir,"T2w_SPC1")):
@@ -37,7 +37,9 @@ def StructuralSetup(StructuralImage):
         os.mkdir(os.path.join(WorkDir, "T1w"))
     if not os.path.isdir(os.path.join(WorkDir,"T2w")):
         os.mkdir(os.path.join(WorkDir,"T2w"))
-
+    newName=StructuralImage.replace(SUBJ + '_' + SESS + '_','')
+    folderName=newName.replace('.nii.gz', '')
+    shutil.copy(os.path.join(root,StructuralImage),os.path.join(WorkDir, folderName, newName))
 
 
 #pads files names with zeros if need to maintain order
@@ -54,13 +56,15 @@ def renameFile(oldFilename):
 
     if '_'+SESS+'_' in oldFilename:
         newFilename = oldFilename.replace('_'+SESS+'_', '_3T_')
-
-    if "_Rest" in newFilename:
+    if any(x in name for x in structuralNames):
+        newFilename = newFilename.replace("MPR", "MPR1")
+        newFilename = newFilename.replace("SPC", "SPC1")
+    elif "_Rest" in newFilename:
         a = newFilename.index("Rest")
         newFilename = newFilename.replace("Rest", "Rest"+ABV)
 
         if "_AP" in newFilename:
-            newFilename = newFilename[:a+7] + '1' + newFilename[a+8:]
+            newFilename = newFilename[:a + 7] + '1' + newFilename[a + 8:]
         else:
             newFilename = newFilename[:a + 7] + '2' + newFilename[a + 8:]
 
@@ -69,7 +73,6 @@ def renameFile(oldFilename):
 
 #finds the folders to place the file based on DMCC standard name scheme
 def findFolder(filename):
-    a = findnth(filename, '_', 1)
     folderName = filename[a+1:]
     if "SBRef" in filename:
         folderName = folderName.replace("_SBRef",'')
@@ -102,9 +105,8 @@ for directory in sorted(os.listdir(Scans)):
             elif "StroopTest" in name:
                 shutil.rmtree(os.path.join(root))
             else:
-                ###TODO###ADD T1w and T2w exceptions
                 if any(x in name for x in structuralNames):
-                    StructuralSetup(name)
+                    StructuralSetup(root,name)
                 newName = renameFile(name)
                 folder = findFolder(newName)
                 print "Moving From: " + os.path.join(root, name)
