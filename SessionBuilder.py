@@ -5,17 +5,19 @@ import glob
 #USEAGE: To assist in building sessions for the DMCC HCP pipelines using Files Dowloaded from intraDB
 #CREATED BY: Mitchell Jeffers
 #DATE CREATED: 7/15/17
-#LAST UPDATED: 7/21/17
+#LAST UPDATED: 7/25/17
 #####################################################################################################
 print "Warning, before using this program ensure that your scans do not contain more than one set of Structural Images \n The suggested Structual Images are non-Normalized"
 
+USR = raw_input("Enter Cluster Username: ")
 SUBJ = str(input("Enter Subject: "))
 SESS = raw_input("Enter Session: ")
+
 ABV=SESS[:3].capitalize()
 
 #WorkDir = '/home/mitchell/Desktop/practice/'+SUBJ+'/unprocessed/3T/'+SUBJ+'_'+SESS
-WorkDir = '/scratch/mjeffers/DMCCPILOT/test_session_download/DOWNLOADS/'+ SUBJ +'/unprocessed/3T/'+SUBJ+'_'+ SESS
-Scans =  WorkDir +'/scans'
+WorkDir = '/scratch/'+USR+'/DMCCPILOT/DOWNLOADS/'+ SUBJ +'/unprocessed/3T/'+SUBJ+'_'+ SESS
+Scans = WorkDir +'/scans'
 structuralNames = ['T1w', 'T2w']
 trialFolders = ["rfMRI_Rest",  "tfMRI_Axcpt",  "tfMRI_Cuedts", "tfMRI_Stern", "tfMRI_Stroop"]
 
