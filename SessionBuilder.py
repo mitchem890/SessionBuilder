@@ -130,7 +130,7 @@ for directory in sorted(os.listdir(Scans)):
             elif "StroopTest" in name:
                 shutil.rmtree(os.path.join(root))
             elif any(x in name for x in structuralNames):
-                StructuralSetup(root, name)
+                StructuralSetup(root, name, pathCurSpinEchoAP, pathCurSpinEchoPA)
             else:
                 newName = renameFile(name)
                 folder = findFolder(newName)
