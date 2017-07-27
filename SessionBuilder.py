@@ -43,6 +43,7 @@ def movefile(root, name, SpinEchoAP, SpinEchoPA):
 
 
 # Setup Structural image folder and handle special Structural image naming scheme aswell as Check for duplicate Structural images
+###TODO###Structural Images still overwriting eachother
 def StructuralSetup(root, StructuralImage, SpinEchoAP, SpinEchoPA):
     if not os.path.isdir(os.path.join(WorkDir, "T1w_MPR1")):
         os.mkdir(os.path.join(WorkDir, "T1w_MPR1"))
