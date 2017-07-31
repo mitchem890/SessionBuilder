@@ -15,8 +15,8 @@ SESS = raw_input("Enter Session: ")
 
 ABV = SESS[:3].capitalize()
 
-WorkDir = '/home/mitchell/Desktop/practice/'+SUBJ+'/unprocessed/3T/'+SUBJ+'_'+SESS
-#WorkDir = '/scratch/' + USR + '/DMCCPILOT/DOWNLOADS/' + SUBJ + '/unprocessed/3T/' + SUBJ + '_' + SESS
+#WorkDir = '/home/mitchell/Desktop/practice/'+SUBJ+'/unprocessed/3T/'+SUBJ+'_'+SESS
+WorkDir = '/scratch/' + USR + '/DMCCPILOT/DOWNLOADS/' + SUBJ + '/unprocessed/3T/' + SUBJ + '_' + SESS
 Scans = WorkDir + '/scans'
 structuralNames = ['T1w', 'T2w']
 foundStructuralImages = []
@@ -77,6 +77,10 @@ def StandardizeFileName(oldFileName):
 
 
 # renames files based on Pipeline required Structure
+#replace the session name with 3T
+#replace Structural appendices
+#add the session abbreviation to the Rest tag
+#replace Rest numbers with 1 or 2 deending on original scan numbers
 def renameFile(oldFilename):
     newFilename = oldFilename
 
@@ -88,11 +92,10 @@ def renameFile(oldFilename):
     elif "_Rest" in newFilename:
         a = newFilename.index("Rest")
         newFilename = newFilename.replace("Rest", "Rest" + ABV)
-
-        # if "_AP" in newFilename:
-        #     newFilename = newFilename[:a + 7] + '1' + newFilename[a + 8:]
-        # else:
-        #     newFilename = newFilename[:a + 7] + '2' + newFilename[a + 8:]
+        if (int(newFilename[a+7])%2 is 0):
+            newFilename = newFilename[:a + 7] + '2' + newFilename[a + 8:]
+        else:
+            newFilename = newFilename[:a + 7] + '1' + newFilename[a + 8:]
 
     return newFilename
 
