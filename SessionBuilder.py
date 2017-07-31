@@ -15,12 +15,12 @@ SESS = raw_input("Enter Session: ")
 
 ABV = SESS[:3].capitalize()
 
-# WorkDir = '/home/mitchell/Desktop/practice/'+SUBJ+'/unprocessed/3T/'+SUBJ+'_'+SESS
-WorkDir = '/scratch/' + USR + '/DMCCPILOT/DOWNLOADS/' + SUBJ + '/unprocessed/3T/' + SUBJ + '_' + SESS
+WorkDir = '/home/mitchell/Desktop/practice/'+SUBJ+'/unprocessed/3T/'+SUBJ+'_'+SESS
+#WorkDir = '/scratch/' + USR + '/DMCCPILOT/DOWNLOADS/' + SUBJ + '/unprocessed/3T/' + SUBJ + '_' + SESS
 Scans = WorkDir + '/scans'
 structuralNames = ['T1w', 'T2w']
 foundStructuralImages = []
-trialFolders = ["rfMRI_Rest", "tfMRI_Axcpt", "tfMRI_Cuedts", "tfMRI_Stern", "tfMRI_Stroop"]
+expectedTrialFolders = ["rfMRI_Rest", "tfMRI_Axcpt", "tfMRI_Cuedts", "tfMRI_Stern", "tfMRI_Stroop"]
 
 
 # finds the position of the nth needle in haystack 0 indexed
@@ -58,12 +58,12 @@ def StructuralSetup(root, StructuralImage, SpinEchoAP, SpinEchoPA):
     newName = newName.replace('_SPC', '')
     folderName = newName.replace('.nii.gz', '')
     if any(x in folderName for x in foundStructuralImages):
-        os.mkdir(WorkDir, "Duplicate")
-        print "FOUND DUPLICATE STRUCTURAL IMAGE: " + os.path.join(root,
-                                                                  StructuralImage) + "\nImage will be placed in: " + os.path.join(
-            WorkDir, "Duplicate")
-        os.rename(os.path.join(root, StructuralImage), os.path.join(WorkDir, 'Duplicate', StructuralImage))
+        if not os.path.isdir(os.path.join(WorkDir, 'DuplicateFiles')):
+            os.mkdir(os.path.join(WorkDir, 'DuplicateFiles'))
+        print "FOUND DUPLICATE STRUCTURAL IMAGE: " + os.path.join(root, StructuralImage) + "\nImage will be placed in: " + os.path.join(WorkDir, 'Duplicate')
+        os.rename(os.path.join(root, StructuralImage), os.path.join(WorkDir, 'DuplicateFiles', StructuralImage))
     else:
+        foundStructuralImages.append(folderName)
         shutil.copy(os.path.join(root, StructuralImage), os.path.join(WorkDir, folderName, newName))
         movefile(root, StructuralImage, SpinEchoAP, SpinEchoPA)
 
@@ -89,10 +89,10 @@ def renameFile(oldFilename):
         a = newFilename.index("Rest")
         newFilename = newFilename.replace("Rest", "Rest" + ABV)
 
-        if "_AP" in newFilename:
-            newFilename = newFilename[:a + 7] + '1' + newFilename[a + 8:]
-        else:
-            newFilename = newFilename[:a + 7] + '2' + newFilename[a + 8:]
+        # if "_AP" in newFilename:
+        #     newFilename = newFilename[:a + 7] + '1' + newFilename[a + 8:]
+        # else:
+        #     newFilename = newFilename[:a + 7] + '2' + newFilename[a + 8:]
 
     return newFilename
 
@@ -106,14 +106,7 @@ def findFolder(filename):
     folderName = folderName.replace(".nii.gz", '')
     return folderName
 
-
-# Build Folders for that session based on DMCC standard naming scheme
-for folder in trialFolders:
-    if not os.path.isdir(os.path.join(WorkDir, folder + ABV + "1_AP")):
-        os.mkdir(os.path.join(WorkDir, folder + ABV + "1_AP"))
-    if not os.path.isdir(os.path.join(WorkDir, folder + ABV + "2_PA")):
-        os.mkdir(os.path.join(WorkDir, folder + ABV + "2_PA"))
-
+#rename the directories with padded zeros to allow sorting
 for directory in sorted(os.listdir(Scans)):
     os.rename(os.path.join(Scans, directory), os.path.join(Scans, StandardizeFileName(directory)))
 
@@ -134,11 +127,13 @@ for directory in sorted(os.listdir(Scans)):
                 StructuralSetup(root, name, pathCurSpinEchoAP, pathCurSpinEchoPA)
             else:
                 newName = renameFile(name)
-                folder = findFolder(newName)
+                curFolder = findFolder(newName)
                 print "Moving From: " + os.path.join(root, name)
-                print "To: " + os.path.join(WorkDir, findFolder(newName), newName)
-                os.rename(os.path.join(root, name), os.path.join(WorkDir, findFolder(newName), newName))
-                shutil.copy(pathCurSpinEchoAP, os.path.join(WorkDir, folder, renameFile(nameCurSpinEchoAP)))
-                shutil.copy(pathCurSpinEchoPA, os.path.join(WorkDir, folder, renameFile(nameCurSpinEchoPA)))
+                print "To: " + os.path.join(WorkDir, curFolder, newName)
+                if not os.path.isdir(os.path.join(WorkDir, curFolder)):
+                    os.mkdir(os.path.join(WorkDir, curFolder))
+                os.rename(os.path.join(root, name), os.path.join(WorkDir, curFolder, newName))
+                shutil.copy(pathCurSpinEchoAP, os.path.join(WorkDir, curFolder, renameFile(nameCurSpinEchoAP)))
+                shutil.copy(pathCurSpinEchoPA, os.path.join(WorkDir, curFolder, renameFile(nameCurSpinEchoPA)))
 
 shutil.rmtree(Scans)
