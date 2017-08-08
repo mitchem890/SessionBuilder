@@ -1,14 +1,11 @@
 #!/bin/bash
 
-DOWNLOAD_LOCATION=/scratch/mjeffers/DMCCPILOT/DOWNLOADS
-read -p "ENTER PROJECT; " PROJ;
-echo $PROJ
+DOWNLOAD_LOCATION=/scratch/${USERNAME}/DMCCPILOT/DOWNLOADS
+PROJ=DMCC_Phase2
+#read -p "ENTER PROJECT: " PROJ;
 read -p "ENTER SUBJECT: " SUBJ; 
-echo $SUBJ
 read -p "ENTER SESSION: " SESSION; 
-echo $SESSION
 read -p "ENTER SCAN NUMBERS: " SCANS;
-echo $SCANS
 
 pushd $DOWNLOAD_LOCATION
 mkdir -p $SUBJ/unprocessed/3T

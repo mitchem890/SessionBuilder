@@ -1,10 +1,11 @@
 #!/bin/bash
-DOWNLOAD_LOCATION=/scratch/mjeffers/DMCCPILOT/DOWNLOADS
-USERNAME='mjeffers'
+
+DOWNLOAD_LOCATION=/scratch/${USERNAME}/DMCCPILOT/DOWNLOADS
 HOST='intradb.humanconnectome.org'
 PROJ='DMCC_Phase2'
-read -p "ENTER SUBJECT: " SUBJ; echo $SUBJ
-read -p "ENTER SESSION: " session; echo $session
+#read -p "ENTER PROJECT: " PROJ;
+read -p "ENTER SUBJECT: " SUBJ;
+read -p "ENTER SESSION: " session;
 pushd $DOWNLOAD_LOCATION
 mkdir -p $SUBJ/unprocessed/3T
 pushd $SUBJ/unprocessed/3T
