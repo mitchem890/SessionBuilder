@@ -10,7 +10,7 @@ import shutil
 print "Warning, before using this program ensure that your scans do not contain more than one set of Structural Images \n The suggested Structual Images are non-Normalized"
 
 USR = raw_input("Enter Cluster Username: ")
-SUBJ = str(input("Enter Subject: "))
+SUBJ = raw_input("Enter Subject: "))
 SESS = raw_input("Enter Session: ")
 
 ABV = SESS[:3].capitalize()
